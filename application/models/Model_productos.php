@@ -21,7 +21,7 @@ class model_productos extends CI_Model {
      * Devuelve los productos detacados siempre y cuando las fechas coincidan
      * @return type
      */
-    public function productosDestacados($desde, $por_pagina) { //importate PAGINAR//$desde, $por_pagina pendientes de pasar por parametros a la función para cuando pagine
+    public function productosDestacados($desde, $por_pagina) { 
         // $query  = ("select * from producto where destacado=1 and visible=1 and finicio_dest<=CURDATE() and ffin_dest>=CURDATE() LIMIT $desde,$por_pagina");
         $query = ("select * from producto where destacado=1 and visible=1 and finicio_dest<=CURDATE() and ffin_dest>=CURDATE() LIMIT $desde,$por_pagina");
 
@@ -144,7 +144,7 @@ class model_productos extends CI_Model {
      */
     public function getProductosPorCategoriaPaginados($catId, $desde, $por_pagina) {
 
-        $query = $this->db->query("select * from producto where categoria_id='$catId' and visible=1");
+        $query = $this->db->query("select * from producto where categoria_id='$catId' and visible=1 LIMIT $desde,$por_pagina");
         $productos = $query->result();
         return $productos;
     }

@@ -25,14 +25,11 @@ class productos extends CI_Controller {
         $this->pagination->initialize($config);    
         $datos['h2Inicial'] = 'Productos destacados';
         $datos['productos'] = $this->Model_productos->productosDestacados($desde, $config['per_page']);
-        //$datos['productos'] = $this->Model_productos->productosDestacados();
-        //$datos_categorias['categorias'] = $this->Model_productos->getCategorias();
         $datos['pag']= $this->pagination->create_links();
         
         //cargo la vista pasando los datos de configuacion
         $this->load->view('Plantilla', [
             'titulo' => 'productos destacados',
-          //  'menu' => $this->load->view('Menu', $datos_categorias, true),
             'cuerpo' => $this->load->view('Listado_articulos', $datos, true),
         ]);
     }
@@ -41,7 +38,7 @@ class productos extends CI_Controller {
   
         $this->load->model('Model_productos');
         $this->load->library('pagination');       
-        $config['base_url'] = base_url() . 'index.php/Productos/MostrarCategorias/index';
+        $config['base_url'] = base_url() . 'index.php/Productos/mostrarCategorias/index';
         $config['total_rows'] = $this->Model_productos->numeroProductosPorCategoria($catId);
         $config['per_page'] = '3';//quiero que se muestren 3 articulos por pagina
         $config['uri_segment'] = '4';

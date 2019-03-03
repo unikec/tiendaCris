@@ -57,6 +57,9 @@ class usuarios extends CI_Controller {
     /**
      * Verifica que el login es correcto y carga el panel de usuarios
      */
+
+
+    /** */
     public function verificarLogin()
       {
         
