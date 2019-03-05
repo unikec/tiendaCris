@@ -9,6 +9,7 @@ class model_usuarios extends CI_Model {
     }
 /**
  * Comprueba que el nick y la contraseña introducidos coinciden
+ * con lo almacenado en la BBDD
  */
     public function logOk($usuario, $password)
     {
@@ -36,7 +37,6 @@ class model_usuarios extends CI_Model {
             }
             else{
             //echo ' ha fallado el verify';
-
             }
         }
         else {
@@ -45,9 +45,14 @@ class model_usuarios extends CI_Model {
             //echo 'algo ha fallado ';
         }
     }
+
+
    //'clave' => password_hash($this->input->post('clave'), PASSWORD_DEFAULT),
     //$password_hash=password_hash([LACONTRASEÑA], PASSWORD_BCRYPT);
-    
+
+    /**
+     * Creación de nuevo usuario con seguridad en la clave 
+     */
     public function registroUsuario($nombre_usuario, $contrasena, $email, $nombre, $apellidos, $dni, $direccion, $provincia){
         $datosUsuario = array(
             'usuario_id' => null,
@@ -75,6 +80,21 @@ class model_usuarios extends CI_Model {
         $reg= $rs->row();
         if ($reg) {
             return $reg->usuario_id;
+        }
+        else {
+            return '';
+        }
+    }
+    public function getEmailUsuario($usuario){
+        $rs = $this->db
+            ->select('email')
+            ->from('usuario')
+            ->where('nombre_usuario', $usuario)
+            ->get();
+
+        $reg= $rs->row();
+        if ($reg) {
+            return $reg->email;
         }
         else {
             return '';
@@ -160,8 +180,16 @@ class model_usuarios extends CI_Model {
      */
     public function modiUsuario($id, $datos)
     {
-        $this->db->where('id', $id);
+        $this->db->where('usuario_id', $id);
         $this->db->update("usuario", $datos);
+    }
+
+    /**
+     * Borrado de datos el usuario que lo solicita
+     */
+    public function borrarUsuario($id){
+    //DELETE FROM usuario WHERE 0
+        $this->db->query("DELETE FROM usuario WHERE usuario_id='$id'");
     }
 }
 

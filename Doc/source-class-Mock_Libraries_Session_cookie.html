@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+	<meta name="robots" content="noindex" />
+
+	<title>File tests/mocks/libraries/session.php | tienda</title>
+
+	<script type="text/javascript" src="resources/combined.js?2233511610"></script>
+	<script type="text/javascript" src="elementlist.js?1296834547"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Packages</h3>
+			<ul>
+				<li><a href="package-CodeIgniter.html">CodeIgniter<span></span></a>
+						<ul>
+				<li><a href="package-CodeIgniter.Drivers.html">Drivers</a>
+						</li>
+				<li><a href="package-CodeIgniter.Libraries.html">Libraries</a>
+						</li>
+							</ul></li>
+				<li class="active"><a href="package-None.html">None</a>
+						</li>
+				<li><a href="package-PHP.html">PHP</a>
+						</li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-CI_TestCase.html">CI_TestCase</a></li>
+				<li><a href="class-Mock_Database_DB.html">Mock_Database_DB</a></li>
+				<li><a href="class-Mock_Database_Schema_Skeleton.html">Mock_Database_Schema_Skeleton</a></li>
+				<li><a href="class-Mock_Libraries_Driver.html">Mock_Libraries_Driver</a></li>
+				<li><a href="class-Mock_Libraries_Session.html">Mock_Libraries_Session</a></li>
+				<li class="active"><a href="class-Mock_Libraries_Session_cookie.html">Mock_Libraries_Session_cookie</a></li>
+				<li><a href="class-Mock_Libraries_Session_native.html">Mock_Libraries_Session_native</a></li>
+				<li><a href="class-usuarios.html" class="invalid">usuarios</a></li>
+			</ul>
+
+
+
+
+
+			<h3>Functions</h3>
+			<ul>
+				<li><a href="function-_exception_handler.html" class="invalid">_exception_handler</a></li>
+				<li><a href="function-autoload.html">autoload</a></li>
+				<li><a href="function-config_item.html" class="invalid">config_item</a></li>
+				<li><a href="function-get_config.html" class="invalid">get_config</a></li>
+				<li><a href="function-get_instance.html" class="invalid">get_instance</a></li>
+				<li><a href="function-get_mimes.html" class="invalid">get_mimes</a></li>
+				<li><a href="function-is_cli.html" class="invalid">is_cli</a></li>
+				<li><a href="function-is_loaded.html" class="invalid">is_loaded</a></li>
+				<li><a href="function-log_message.html" class="invalid">log_message</a></li>
+				<li><a href="function-set_status_header.html" class="invalid">set_status_header</a></li>
+				<li><a href="function-show_404.html" class="invalid">show_404</a></li>
+				<li><a href="function-show_error.html" class="invalid">show_error</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="package-None.html" title="Summary of None"><span>Package</span></a>
+			</li>
+			<li>
+				<a href="class-Mock_Libraries_Session_cookie.html" title="Summary of Mock_Libraries_Session_cookie"><span>Class</span></a>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<pre><code><span id="1" class="l"><a class="l" href="#1"> 1: </a><span class="xlang">&lt;?php</span>
+</span><span id="2" class="l"><a class="l" href="#2"> 2: </a>
+</span><span id="3" class="l"><a class="l" href="#3"> 3: </a><span class="php-comment">/**
+</span></span><span id="4" class="l"><a class="l" href="#4"> 4: </a><span class="php-comment"> * Mock library to add testing features to Session driver library
+</span></span><span id="5" class="l"><a class="l" href="#5"> 5: </a><span class="php-comment"> */</span>
+</span><span id="6" class="l"><a class="l" href="#6"> 6: </a><span class="php-keyword1">class</span> <a id="Mock_Libraries_Session" href="#Mock_Libraries_Session">Mock_Libraries_Session</a> <span class="php-keyword1">extends</span> CI_Session {
+</span><span id="7" class="l"><a class="l" href="#7"> 7: </a>    <span class="php-comment">/**
+</span></span><span id="8" class="l"><a class="l" href="#8"> 8: </a><span class="php-comment">     * Simulate new page load
+</span></span><span id="9" class="l"><a class="l" href="#9"> 9: </a><span class="php-comment">     */</span>
+</span><span id="10" class="l"><a class="l" href="#10">10: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_reload" href="#_reload">reload</a>()
+</span><span id="11" class="l"><a class="l" href="#11">11: </a>    {
+</span><span id="12" class="l"><a class="l" href="#12">12: </a>        <span class="php-var">$this</span>-&gt;_flashdata_sweep();
+</span><span id="13" class="l"><a class="l" href="#13">13: </a>        <span class="php-var">$this</span>-&gt;_flashdata_mark();
+</span><span id="14" class="l"><a class="l" href="#14">14: </a>        <span class="php-var">$this</span>-&gt;_tempdata_sweep();
+</span><span id="15" class="l"><a class="l" href="#15">15: </a>    }
+</span><span id="16" class="l"><a class="l" href="#16">16: </a>}
+</span><span id="17" class="l"><a class="l" href="#17">17: </a>
+</span><span id="18" class="l"><a class="l" href="#18">18: </a><span class="php-comment">/**
+</span></span><span id="19" class="l"><a class="l" href="#19">19: </a><span class="php-comment"> * Mock cookie driver to overload cookie setting
+</span></span><span id="20" class="l"><a class="l" href="#20">20: </a><span class="php-comment"> */</span>
+</span><span id="21" class="l"><a class="l" href="#21">21: </a><span class="php-keyword1">class</span> <a id="Mock_Libraries_Session_cookie" href="#Mock_Libraries_Session_cookie">Mock_Libraries_Session_cookie</a> <span class="php-keyword1">extends</span> CI_Session_cookie {
+</span><span id="22" class="l"><a class="l" href="#22">22: </a>    <span class="php-comment">/**
+</span></span><span id="23" class="l"><a class="l" href="#23">23: </a><span class="php-comment">     * Overload _setcookie to manage $_COOKIE values, since actual cookies can't be set in unit testing
+</span></span><span id="24" class="l"><a class="l" href="#24">24: </a><span class="php-comment">     */</span>
+</span><span id="25" class="l"><a class="l" href="#25">25: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">function</span> <a id="__setcookie" href="#__setcookie">_setcookie</a>(<span class="php-var">$name</span>, <span class="php-var">$value</span> = <span class="php-quote">''</span>, <span class="php-var">$expire</span> = <span class="php-num">0</span>, <span class="php-var">$path</span> = <span class="php-quote">''</span>, <span class="php-var">$domain</span> = <span class="php-quote">''</span>, <span class="php-var">$secure</span> = <span class="php-keyword1">FALSE</span>, <span class="php-var">$httponly</span> = <span class="php-keyword1">FALSE</span>)
+</span><span id="26" class="l"><a class="l" href="#26">26: </a>    {
+</span><span id="27" class="l"><a class="l" href="#27">27: </a>        <span class="php-keyword1">if</span> (<span class="php-keyword1">empty</span>(<span class="php-var">$value</span>) <span class="php-keyword1">OR</span> <span class="php-var">$expire</span> &lt;= <span class="php-keyword2">time</span>())
+</span><span id="28" class="l"><a class="l" href="#28">28: </a>        {
+</span><span id="29" class="l"><a class="l" href="#29">29: </a>            <span class="php-keyword1">unset</span>(<span class="php-var">$_COOKIE</span>[<span class="php-var">$name</span>]);
+</span><span id="30" class="l"><a class="l" href="#30">30: </a>        }
+</span><span id="31" class="l"><a class="l" href="#31">31: </a>        <span class="php-keyword1">else</span>
+</span><span id="32" class="l"><a class="l" href="#32">32: </a>        {
+</span><span id="33" class="l"><a class="l" href="#33">33: </a>            <span class="php-var">$_COOKIE</span>[<span class="php-var">$name</span>] = <span class="php-var">$value</span>;
+</span><span id="34" class="l"><a class="l" href="#34">34: </a>        }
+</span><span id="35" class="l"><a class="l" href="#35">35: </a>    }
+</span><span id="36" class="l"><a class="l" href="#36">36: </a>}
+</span><span id="37" class="l"><a class="l" href="#37">37: </a>
+</span><span id="38" class="l"><a class="l" href="#38">38: </a></span><span class="php-keyword1">class</span> <a id="Mock_Libraries_Session_native" href="#Mock_Libraries_Session_native">Mock_Libraries_Session_native</a> <span class="php-keyword1">extends</span> CI_Session_native {}</code></pre>
+
+	<div id="footer">
+		tienda API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

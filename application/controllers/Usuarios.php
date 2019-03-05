@@ -2,40 +2,42 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class usuarios extends CI_Controller {
-
+/**
+ * Nos lleva al inicio a la pantalla
+ * de inicio de sesión, registro y recuperación de contraseña
+ */
 	public function index(){
         $this->load->model('Model_productos');
-       // $datos['categorias']= $this->Model_productos->getCategorias();
-       // $datos['h2Inicial'] = 'Mi c';
-		$this->load->view('plantilla', [
-			'titulo' => 'Inicio de sesion',
-			//'menu'=>  $this->load->view('Menu', $datos, true),
-			'cuerpo' => $this->load->view('Login',[],true)
- 		]
-	);
-	}
 
+			$this->load->view('plantilla', [
+					'titulo' => 'Inicio de sesion',
+					'cuerpo' => $this->load->view('Login',[],true)
+				]	);
+	 }
+/**
+ * Comprueba el usuario ha introcido un nick y contraseñas 
+ * correspondientes
+ */
 	public function logIn(){
 
 		$this->load->model('Model_productos');
 		$this->load->model('Model_usuarios');
 
 		$this->form_validation->set_rules('usuario', 'Usuario', 'required');
-		$this->form_validation->set_rules('password', 'Contraseña', 'required');
-               
+		$this->form_validation->set_rules('password', 'Contraseña', 'required');              
 
 		if ($this->Model_usuarios->logOK(
 			$this->input->post('usuario'),
 			$this->input->post('password'))&
 			$this->form_validation->run() == TRUE) {			
-
+			//con set_userdata() almacenamos las los datos necesarios de 
 			$this->session->set_userdata('usuario_id', $this->Model_usuarios->getUsuarioId($this->input->post('usuario')));
 			$this->session->set_userdata('nombre_usuario', $this->Model_usuarios->getNombreUsuario($this->input->post('usuario')));
 			$this->session->set_userdata('administrador', $this->Model_usuarios->getAdmin($this->input->post('usuario')));
+			$this->session->set_userdata('dentro',TRUE);///????
 			
 			 $this->load->view('Plantilla', [
 				'titulo' => 'Iniciando sesion',
-			//	'menu'=>  $this->load->view('Menu', $datos_categorias, true),
 				'cuerpo' => $this->load->view('Bienvenida',[],true)
 			 ]);
 
@@ -44,35 +46,52 @@ class usuarios extends CI_Controller {
 			if ($this->form_validation->run() == TRUE) {
 				$errormsg= "Error en usuario o contraseña";
 			}
-		//	$datos_categorias['categorias']= $this->Model_productos->getCategorias();
 			$this->load->view('Plantilla', [
 				'titulo' => 'Loging',
 				//'menu'=>  $this->load->view('Menu', $datos_categorias, true),
 				'cuerpo' => $this->load->view('Login',['error'=> $errormsg],true)
 			 ]);
 		}
-		
-
 	}
 
+	/*hacer estaDentro()
+return $this->session->userdata('dentro');
+*/ 
+
+/**
+ * Para comprobar si el usuario está autenticado o no
+ */
+	public function estaLogueado(){
+		if($this->session->userdata('dentro')){
+			return true;
+		}
+		  return true;
+	}
+
+	/**hacer cierraSession() 
+ * $this->session->get_userdata('dentro', false);
+*/
+/**
+ * Cierra la sesión activa
+ * El método unset_userdata() elimina las entradas
+ *  de cualquier período de sesiones
+ */
 	public function logOut(){
 		$this->load->model('Model_productos');
+
 		$this->session->unset_userdata('usuario_id');
 		$this->session->unset_userdata('nombre');
 		$this->session->unset_userdata('administrador');
+		$this->session->unset_userdata('dentro');
 
-       // $datos_categorias['categorias']= $this->Model_productos->getCategorias();
 		$this->load->view('Plantilla', [
 			'titulo' => 'Inicio de sesion',
-			//'menu'=>  $this->load->view('Menu', $datos_categorias, true),
 			'cuerpo' => $this->load->view('Listado_articulos',[],true)
 		 ]);
 	}
 
 
-/*hacer estaDentro()
-return $this->session->userdata('dentro');
-*/ 
+
 /**hacer cierraSession() 
  * $this->session->get_userdata('dentro', false);
 */
@@ -108,6 +127,7 @@ public function registro(){
 		$this->session->set_userdata('usuario_id', $this->Model_usuarios->getUsuarioId($this->input->post('nombre_usuario')));
 		$this->session->set_userdata('nombre', $this->Model_usuarios->getNombreUsuario($this->input->post('nombre_usuario')));
 		$this->session->set_userdata('administrador', $this->Model_usuarios->getAdmin($this->input->post('nombre_usuario')));
+		$this->session->set_userdata('dentro',TRUE);
 		
 		$datos['h2Inicial'] = 'Bienvenid@ '.$this->Model_usuarios->getNombreUsuario($this->input->post('usuario'));
 		
@@ -143,15 +163,17 @@ public function registro(){
 
 		]);
 	  }
-	  
+	  /**
+		 * Guardar los cambios efectuados en la cuenta
+		 */
 	  public function guardarEdicion(){
 		$this->load->model('Model_productos');
 		$this->load->model('Model_usuarios');
 
 		//$this->form_validation->set_rules('nombre_usuario', 'nombre_usuario', 'required');
 		$this->form_validation->set_rules('nombre_usuario', 'Nick o alias', 'required');
-		$this->form_validation->set_rules('clave1', 'Contraseña 1', 'required|trim|min_length[5]');
-		$this->form_validation->set_rules('clave2', 'Contraseña 2', 'required|trim|min_length[5]|matches[clave1]');
+		$this->form_validation->set_rules('clave1', 'Contraseña 1', 'required|trim|min_length[2]');
+		$this->form_validation->set_rules('clave2', 'Contraseña 2', 'required|trim|min_length[2]|matches[clave1]');
 		$this->form_validation->set_rules('nombre', 'Nombre', 'required');
 		$this->form_validation->set_rules('apellidos', 'Apellidos', 'required');
 		$this->form_validation->set_rules('email', 'Correo', 'required|trim');
@@ -165,7 +187,7 @@ public function registro(){
 		  
 		  if ($this->form_validation->run() === true)
 			{
-			  $id = $this->session->userdata('id');
+			  $id = $this->session->userdata('usuario_id');
 			  
 			  $datos = array(
 				  'nombre_usuario'=> $this->input->post('nombre_usuario'),
@@ -196,15 +218,56 @@ public function registro(){
 				'titulo' => 'Edita usuario',
 				'cuerpo' => $this->load->view("EditaUsuario",$contenido, TRUE)
 	
-			]);
-	
+			]);}
+
+		}
+		/**
+		 * Borra los datos relativos a ese cliente
+		 */
+		public function eliminaCuenta($id) {
+			$this->load->model('Model_productos');
+	   	$this->load->model('Model_usuarios');
+
+        $this->Model_usuarios->borrarUsuario($id);
+        $this->session->sess_destroy();
+        redirect('Productos/index');
 			}
-		  
-		
+			
 
+			/**
+			 * Se tiene que crear una nueva clave y entregarla por un medio seguro
+			 * a un correo electronico proporcionado por el usuario cuando se registró
+			 */
+			public function recuperarClave()
+      {
+        $nueva = substr( md5(microtime()), 1, 8);
+        
+        $datos = array(
+            "clave" => password_hash($nueva, PASSWORD_DEFAULT)
+        );
+        $email=$this->Model_usuarios->getEmailUsuario($this->input->post('usuario'));
+				$usuario_id=$this->Model_usuarios->getUsuarioId($this->input->post('usuario'));
+        $this->Model_usuarios->modiUsuario($usuario_id);
+        $this->email->from('tiendacrist@gmail.com', 'Copi Billy Papper');
+        $this->email->to($email);
+        $this->email->subject('Recuperación de clave');
+        $this->email->message('Hola '.$this->input->post('usuario').', su nueva contraseña es: ' . $nueva);
+        
+		if($this->email->send()){
+			$datos['info']='Correo de recuperación enviado satisfactoriamente';
+				$this->load->view('plantilla', [
+					'titulo' => 'Recuperación de clave exitosa',
+					'cuerpo' => $this->load->view("NuevaClave", $datos, TRUE)
+					]);
+		}else{
+			$datos['info']='Lo sentimos pero se ha producido un error y no se ha podido mandar el correo, intentelo de nuevo más tarde';
+				$this->load->view('plantilla', [
+					'titulo' => 'Recuperación de clave Fallida',
+					'cuerpo' => $this->load->view("NuevaClave", $datos, TRUE)
+					]);
+		}		
+	}//end funcionRecupera Clave
+	
 
-		
-
-	  }
 
 }

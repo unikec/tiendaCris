@@ -20,17 +20,17 @@ $categorias = $ci->Model_productos->getCategorias();
         </ul>
     </div>
     
-             <span class="float-right text-dark rounded p-1">
-                 <a   href="<?= site_url().'/Usuarios/index/'?>"><i class="fas fa-user"></i></a>
-                 <a   href="<?= site_url().'/Productos/verCarrito/'?>"><i class='fas fa-shopping-cart'></i></a>
-            </span>
-            
-                
-            
-    
-</nav>
-
-
-
-
+    <span class="float-right text-dark rounded p-1">
+        <ul class="navbar-nav float-right">
+            <?php if ($this->session->userdata('usuario_id')) :?>
+            <li class="nav-item">  Hola <?= $this->session->nombre ?></li>
+            <a class="nav-link" href="<?= site_url().'/Usuarios/LogOut'?>"><i class="fas fa-user-slash"></i></a>
+                    
+            <?php else : ?>
+            <a   href="<?= site_url().'/Usuarios/index/'?>"><i class="fas fa-user"></i></a>  
+            <?php endif; ?>
+            <a   href="<?= site_url().'/Productos/verCarrito/'?>"><i class='fas fa-shopping-cart'></i></a>
+        </ul>              
+     </span>
+  </nav>
 </div>

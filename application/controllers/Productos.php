@@ -117,9 +117,9 @@ class productos extends CI_Controller {
          * Borra toda la informacion contenida en el carrito
          */
         public function eliminarCarrito() {
-        $this->load->library('cart');
-        $this->cart->destroy();
-        $this->verCarrito();
+            $this->load->library('cart');
+            $this->cart->destroy();
+            $this->verCarrito();
         }
         
         
@@ -160,4 +160,16 @@ class productos extends CI_Controller {
                     'cuerpo' => $this->load->view('prueba', $datos, true),
         ]);
         }
+ /**
+     * Devuelve una vista con la lista de los pedidos que tiene el usuario.
+     * @param type $id ID del usuario
+     */
+    public function totalPedidos($id)
+      {
+        $datos  = $this->Model_productos->getPedidos($id);
+        $this->load->view('Plantilla', [
+            'titulo' => 'Total pedidos',            
+            'cuerpo' => $this->load->view('Pedidos', $datos, true),]);
+      }
+
 }

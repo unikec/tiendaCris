@@ -53,6 +53,7 @@ class model_productos extends CI_Model {
         return $produ->row();
     }
 
+
     /**
      * Devuelve la descrición del producto seleccionado
      * @param type $prodId
@@ -110,6 +111,25 @@ class model_productos extends CI_Model {
             return '';
         }
     }
+
+    /**
+     * Directamente saco el stock de un determinado producto
+     */
+    public function getStock($prodId) {
+        $rs = $this->db //rs=resultado
+                ->select('stock')
+                ->from('producto')
+                ->where('producto_id', $prodId)
+                ->get();
+        $reg = $rs->row(); //reg = registro de resultado
+        if ($reg) { //en el caso de obtener dato a la consulta
+            return $reg->stock;
+        } else { //en el caso de no obtener ningun resultado a la consulta
+            return '';
+        }
+    }
+
+    
 
     /**
      * Saca los nombres de todas las categorias
@@ -291,8 +311,114 @@ class model_productos extends CI_Model {
         }
         return $info=array('aPagar'=>$sumaCompra, 'desgloseIVA'=>$sumaIVA);
     }
-    
-    
+
+  /*  public function listaArticulosID($productosCarrito){
+        foreach ($productosCarrito as $producto) {        
+            $articulosID=array($producto['id']); 
+               
+         }
+         return $articulosID;
+    }*/
+
+    public function comprobarStock($idArti, $canti){
+        $rs = $this->db //rs=resultado
+                ->select('stock')
+                ->from('producto')
+                ->where('$id', $idArti)
+                ->get();
+        $reg = $rs->row(); //reg = registro de resultado
+        if ($reg) { //en el caso de obtener dato a la consulta
+            if($reg->stock>$canti){
+                return true;
+            }else{
+                return false;
+            }
+        } else { //en el caso de no obtener ningun resultado a la consulta
+            return '';
+        }
+        
+    }
+    /**
+     * Nos devuelve todos los pedidos realizados por el usuario_id
+     */
+    public function getPedidos($id) {
+        $query = "select * from pedido where usuario_id=" . $id . "";
+        $query = $this->db->query($query);
+        return $query->result();
+    }
+
+    /**
+     * Por cada articulo del carrito creo una linea de pedido
+     * así almaceno toda la información relativa a la compra
+     */
+    public function guardarLineaPedido($datos){
+
+          $this->db->insert('linea_pedido', $datos); 
+    }
+
+
+
+/**
+ * Por cada una de las lineas de pedido de un usuario en la misma fecha
+ * vamos insertado campos en el pedido
+ */
+    public function registraPedido($productosCarrito, $pedido_id){
+
+        foreach ($productosCarrito as $producto) {
+
+            $precioConDescuento= $this->aplicaDescuento($producto['id']);
+            $subT= $this->subTotal($precioConDescuento, $producto['qty']);
+        
+            $linea= array(
+                'producto_id'=>$producto['id'],
+                'cantidad'=>$producto['qty'],
+                'importe'=>$subT,
+                'pedido_id'=>$pedido_id
+            );
+            $this->guardarLineaPedido($linea);
+        }
+    }
+     /**
+      * Modifica el estock del producto en función de la cantidad vendida del articulo
+      */
+    public function ventaArti($idPedido, $cantidad){
+
+    }
+ 
+
+    /**
+     * Tras la anulación del un pedido pendiente 
+     * de procesar, los articulos no se han logrado 
+     * vender, por lo tanto hay que restaurar el stock
+     * a la situación inicial
+     */
+    public function devolucionArt($idPedido, $cantidad){
+
+    }
+
+    /**
+     * Estado Inicial: PENDIENTE de procesar  (este estado se puede ANULAR)
+     * Cuando se ha enviado: PROCESADO
+     * Se ha realizado la entrega del pedido: RECIBIDO
+     */
+    public function cambiaEstadoPedido($idPedido, $nuevoEstado){
+
+    }
+
+    public function getEstadoPedido($idPedido){
+
+    }
+
+    /*$data = array(
+        'title' => $title,
+        'name' => $name,
+        'date' => $date
+);
+
+$this->db->where('id', $id);
+$this->db->update('mytable', $data); */
+
+
    
 
 }
