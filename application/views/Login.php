@@ -17,7 +17,7 @@
     <div class="form-group row">
         <label class="control-label col-sm-2" for="pwd">Password:</label>
         <div class="col-sm-10">
-            <p>Si ha olvidado su contraseña,<a href="<?=site_url().'/Usuarios/recuperar_clave'?>"> pinche aquí</a></p>
+            <p>Si ha olvidado su contraseña,<a href="<?=site_url().'/Usuarios/nuevaClave'?>"> pinche aquí</a></p>
             <input type="password" class="form-control" id="password" name='password' placeholder="Enter password" value=""/>     
         </div>
          

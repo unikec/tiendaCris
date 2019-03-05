@@ -36,10 +36,11 @@ class usuarios extends CI_Controller {
 			$this->session->set_userdata('administrador', $this->Model_usuarios->getAdmin($this->input->post('usuario')));
 			$this->session->set_userdata('dentro',TRUE);///????
 			
-			 $this->load->view('Plantilla', [
+		/*	 $this->load->view('Plantilla', [
 				'titulo' => 'Iniciando sesion',
 				'cuerpo' => $this->load->view('Bienvenida',[],true)
-			 ]);
+			 ]);*/
+			 redirect('Productos/index');
 
 		} else {
 			$errormsg= "";
@@ -58,15 +59,6 @@ class usuarios extends CI_Controller {
 return $this->session->userdata('dentro');
 */ 
 
-/**
- * Para comprobar si el usuario está autenticado o no
- */
-	public function estaLogueado(){
-		if($this->session->userdata('dentro')){
-			return true;
-		}
-		  return true;
-	}
 
 	/**hacer cierraSession() 
  * $this->session->get_userdata('dentro', false);
@@ -78,16 +70,13 @@ return $this->session->userdata('dentro');
  */
 	public function logOut(){
 		$this->load->model('Model_productos');
-
+		 
 		$this->session->unset_userdata('usuario_id');
 		$this->session->unset_userdata('nombre');
 		$this->session->unset_userdata('administrador');
 		$this->session->unset_userdata('dentro');
 
-		$this->load->view('Plantilla', [
-			'titulo' => 'Inicio de sesion',
-			'cuerpo' => $this->load->view('Listado_articulos',[],true)
-		 ]);
+		redirect('Productos/index');
 	}
 
 
@@ -110,6 +99,7 @@ public function registro(){
 	$this->form_validation->set_rules('apellidos', 'apellidos', 'required');
 	$this->form_validation->set_rules('dni', 'dni', 'required');
 	$this->form_validation->set_rules('direccion', 'direccion', 'required');
+	$this->form_validation->set_rules('cp', 'Código Postal', 'required');
 	$this->form_validation->set_rules('provincia', 'provincia', 'required');
 
 	if ($this->form_validation->run() == TRUE) {
@@ -121,6 +111,7 @@ public function registro(){
 				$this->input->post('apellidos'),
 				$this->input->post('dni'),
 				$this->input->post('direccion'),
+				$this->input->post('cp'),
 				$this->input->post('provincia')
 		);
 	   
@@ -133,8 +124,6 @@ public function registro(){
 		
 		$this->load->view('plantilla', [
 			'titulo' => 'Registro con éxito',
-		//	'menu'=>  $this->load->view('Menu', $datos_categorias, true),
-			//'cuerpo' => $this->load->view('Bienvenida',$datos,true),
 			'cuerpo' => $this->load->view('RegistroHecho',$datos,true),
 		]);
 	} else {   
@@ -178,6 +167,7 @@ public function registro(){
 		$this->form_validation->set_rules('apellidos', 'Apellidos', 'required');
 		$this->form_validation->set_rules('email', 'Correo', 'required|trim');
 		$this->form_validation->set_rules('direccion', 'Direccion', 'required');
+		$this->form_validation->set_rules('cp', 'Codigo Postal', 'required');
 		
 		$this->form_validation->set_message('required', 'Debe introducir el campo %s');
 		$this->form_validation->set_message('min_length', 'El campo %s debe ser de al menos %s carácteres');
@@ -195,7 +185,8 @@ public function registro(){
 				  'nombre' => $this->input->post('nombre'),
 				  'apellidos' => $this->input->post('apellidos'),
 				  'email' => $this->input->post('email'),
-				  'direccion' => $this->input->post('direccion'),
+					'direccion' => $this->input->post('direccion'),
+				  'cp' => $this->input->post('cp'),					
 				  'provincia_id' => $this->input->post('provincia')
 			  );
 			  
@@ -235,32 +226,52 @@ public function registro(){
 			
 
 			/**
+			 * Nos lleva a la vista donde se recogen los datos necesarios
+			 * para poder ver restaurar la clave
+			 */
+			public function nuevaClave(){
+				$this->load->model('Model_productos');
+				$this->load->model('Model_usuarios');
+				
+				$datos['h2Inicial']='';
+				$this->load->view('plantilla', [
+					'titulo' => 'Restaurando clave',
+					'cuerpo' => $this->load->view("NuevaClave",$datos, TRUE)
+					]);
+			}
+
+			/**
 			 * Se tiene que crear una nueva clave y entregarla por un medio seguro
 			 * a un correo electronico proporcionado por el usuario cuando se registró
 			 */
 			public function recuperarClave()
       {
-        $nueva = substr( md5(microtime()), 1, 8);
+				$this->load->library('email','','correo');
+				$this->load->model('Model_productos');
+				$this->load->model('Model_usuarios');
+
+        $nueva = substr( md5(microtime()), 1, 8);//cosntruyo una nueva contraseña en base a la fecha y hora
         
-        $datos = array(
-            "clave" => password_hash($nueva, PASSWORD_DEFAULT)
-        );
+				$datos = array("contrasena" => password_hash($nueva, PASSWORD_DEFAULT));
+				
         $email=$this->Model_usuarios->getEmailUsuario($this->input->post('usuario'));
 				$usuario_id=$this->Model_usuarios->getUsuarioId($this->input->post('usuario'));
-        $this->Model_usuarios->modiUsuario($usuario_id);
-        $this->email->from('tiendacrist@gmail.com', 'Copi Billy Papper');
-        $this->email->to($email);
-        $this->email->subject('Recuperación de clave');
-        $this->email->message('Hola '.$this->input->post('usuario').', su nueva contraseña es: ' . $nueva);
+
+				$this->Model_usuarios->modiUsuario($usuario_id,$datos);
+				
+        $this->correo->from('tiendacrist@gmail.com', 'Copi Billy Papper');
+        $this->correo->to($email);
+        $this->correo->subject('Recuperación de clave');
+        $this->correo->message('Hola '.$this->input->post('usuario').', su nueva contraseña es: ' . $nueva);
         
-		if($this->email->send()){
-			$datos['info']='Correo de recuperación enviado satisfactoriamente';
+		if($this->correo->send()){
+			$datos['h2Inicial']='Correo de recuperación enviado satisfactoriamente';
 				$this->load->view('plantilla', [
 					'titulo' => 'Recuperación de clave exitosa',
 					'cuerpo' => $this->load->view("NuevaClave", $datos, TRUE)
 					]);
 		}else{
-			$datos['info']='Lo sentimos pero se ha producido un error y no se ha podido mandar el correo, intentelo de nuevo más tarde';
+			$datos['h2Inicial']='Lo sentimos pero se ha producido un error y no se ha podido mandar el correo, intentelo de nuevo más tarde';
 				$this->load->view('plantilla', [
 					'titulo' => 'Recuperación de clave Fallida',
 					'cuerpo' => $this->load->view("NuevaClave", $datos, TRUE)

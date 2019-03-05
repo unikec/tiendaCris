@@ -27,12 +27,15 @@
             </tr>
           <?php endforeach;?>
   </table>  
+
      <div class="container-fluid">
     <div class="row ">
-        <div class="col-md-8">Total IVA: <?= $totales['desgloseIVA'] ?>  </div>  
-        <div class="col-md-4"><label>Total: <?= $totales['aPagar'] ?></label></div>
+        <div class="col-md-8">Total IVA <small>desglosado</small>:<b> <?= $totales['desgloseIVA'] ?> €</b> </div>  
+        <div class="col-md-4"><label>Total,<small> IVA incluido</small>: <b> <?= $totales['aPagar'] ?> €</b></label></div>
              
     </div>
+  <p>Todos los productos llevan IVA incluido en le precio, en el apartodo subtotal dedrá aplicado el pertinente descuento</p>
+
      </div> 
     <div class="clearfix">
         <div class="float-right">
@@ -40,7 +43,7 @@
         </div>
         
         <div class="float-left">
-            <a class="btn btn btn-info" href="<?= site_url() . '/Productos/insertarPedido/' ?>"><b><span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;Finalizar compra</b></a>
+            <a class="btn btn btn-info" href="<?= site_url() . '/Productos/tramitarPedido/' ?>"><b><span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;Finalizar compra</b></a>
         </div>
          
     </div>

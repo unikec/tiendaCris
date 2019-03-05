@@ -1,6 +1,6 @@
-<h2 class="center"><?=$h2Inicial?></h2>
-<h3 style='margin-left: 4em'>Recuperación de clave</h3>
-				
+
+<h1 class= "mx-auto">Recuperación de clave</h1>
+<h2 class="center"><?=$h2Inicial?></h2>				
 <?php echo form_open('Usuarios/recuperarClave'); ?>
 	<div class="row">
 	    <div class="col-xs-4">
@@ -12,5 +12,5 @@
 	   </div>
    </div>	
 		
-<a style='margin-left: 7em' class="btn btn btn-default" href="<?=site_url().'/Usuarios/Login'?>">Volver</a>	
+<a style='margin-left: 7em' class="btn btn btn-info" href="<?=site_url().'/Usuarios/Login'?>">Volver</a>	
 <?php echo form_close() ?>

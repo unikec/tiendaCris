@@ -168,8 +168,69 @@ class productos extends CI_Controller {
       {
         $datos  = $this->Model_productos->getPedidos($id);
         $this->load->view('Plantilla', [
-            'titulo' => 'Total pedidos',            
+            'titulo' => 'Pedido realizados',            
             'cuerpo' => $this->load->view('Pedidos', $datos, true),]);
+      }
+ 
+      /**
+       * Primero: comprobar que el usuario está logueado
+       * Segungo: comprobar stock de los productos del carrito
+       * tercero:crearPedido
+       * cuarto: guardar la información de lo comprado en las lineas de pedido pertinentes
+       * quinto: modificar el estock
+       * sexto: vista contenido del pedido realizado
+       */
+      public function tramitarPedido(){
+        $this->load->model('Model_productos'); //cargo el modelo
+        $this->load->model('Model_usuarios');
+        $this->load->library('cart');
+
+        $cesta=$this->cart->contents();
+//echo 'hola soy'.$this->session->userdata('nombre_usuario');
+//if($this->session->userdata('dentro') !=''){
+//if($this->session->userdata('nombre_usuario') !=''){
+        if($this->session->userdata('dentro')){ 
+            echo 'hola'; 
+            $clienteID=$this->session->userdata('usuario_id');
+            $datosCliente=$this->Model_usuarios->getUsuario($clienteID);  
+            print_r($datosCliente);  
+            if($this->Model_productos->comprobarStockCarrito($cesta)==""){
+                
+                $this->Model_productos->creaPedido($datosCliente);//aqui me peta
+                $pedidoID= $this->Model_productos->ultimoPedido($clienteID);//ultimoPedido($usuarioID)
+                $this->Model_productos->registraPedido($cesta, $pedidoID);
+                $this->Model_productos->modificaStockCarrito($cesta);
+
+                $datos['pedido'] = $this->Model_productos->getPedido($pedidoID);
+                $datos['lineas']=$this->Model_productos->getLineasPedido($pedidoID);
+                $datos['totales'] = $this->Model_productos->totalCompra($datos['$cesta']);
+                $this->load->view('Plantilla', [
+                    'titulo' => 'Pedido realizados',            
+                    'cuerpo' => $this->load->view('DetallePedido', $datos, true),]);
+            }else{
+                $datos['h2Inicial'] = $this->Model_productos->comprobarStockCarrito($cesta);
+                $this->load->view('Plantilla', [
+                    'titulo' => 'Pedido realizados',            
+                    'cuerpo' => $this->load->view('ProblemasCompra', $datos, true),]);
+            }
+        }else{
+            $datos['h2Inicial']  = "No está identificado o no está registrado, por favor acceda a su cuenta o cree una para seguir con la commpra";
+             $this->load->view('Plantilla', [
+            'titulo' => 'Pedido realizados',            
+            'cuerpo' => $this->load->view('ProblemasCompra', $datos, true),]);
+        }
+
+      }
+
+
+      /**
+       * Primero comprobar si el pedido sigue como pendiente, 
+       * solo se puede anular si el estado es P
+       * Segundo: cambiar estado pedido
+       * tercero: devolver productos al estos
+       */
+      public function cancelarPedido(){
+
       }
 
 }

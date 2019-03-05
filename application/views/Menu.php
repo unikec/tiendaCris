@@ -17,13 +17,21 @@ $categorias = $ci->Model_productos->getCategorias();
                     <?php endforeach; ?>   
                 </div>
             </li>
+            <?php if ($this->session->userdata('usuario_id')) :?>
+            <li>
+                <a  class="btn btn-info" href="<?=site_url().'/Productos/totalPedidos/'.$this->session->userdata('usuario_id')?>">Pedidos</a>
+            </li>
+            <li>
+				<a  class="btn btn-warning"  href="<?=site_url().'/Usuarios/editaUsuario/'.$this->session->userdata('usuario_id')?>">Editar Usuario</a>
+            </li>
+            <?php endif; ?>
         </ul>
     </div>
     
     <span class="float-right text-dark rounded p-1">
         <ul class="navbar-nav float-right">
             <?php if ($this->session->userdata('usuario_id')) :?>
-            <li class="nav-item">  Hola <?= $this->session->nombre ?></li>
+            <li class="nav-item">  Hola <?= $this->session->userdata('nombre_usuario') ?></li>
             <a class="nav-link" href="<?= site_url().'/Usuarios/LogOut'?>"><i class="fas fa-user-slash"></i></a>
                     
             <?php else : ?>

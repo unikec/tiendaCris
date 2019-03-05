@@ -36,6 +36,10 @@
     <input type="text" class="form-control" name="direccion" value=""  />
 </div>
 <div class="col-sm-10">
+    <label class="control-label col-sm-2">Código Postal</label>
+    <input type="text" class="form-control" name="cp" value=""  />
+</div>
+<div class="col-sm-10">
 <label class="control-label col-sm-2">Provincia</label>
 <select class="form-control" name="provincia" >
     <?php

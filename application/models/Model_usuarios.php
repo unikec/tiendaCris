@@ -53,7 +53,7 @@ class model_usuarios extends CI_Model {
     /**
      * Creación de nuevo usuario con seguridad en la clave 
      */
-    public function registroUsuario($nombre_usuario, $contrasena, $email, $nombre, $apellidos, $dni, $direccion, $provincia){
+    public function registroUsuario($nombre_usuario, $contrasena, $email, $nombre, $apellidos, $dni, $direccion,$cp, $provincia){
         $datosUsuario = array(
             'usuario_id' => null,
             'nombre_usuario' => $nombre_usuario,
@@ -63,12 +63,14 @@ class model_usuarios extends CI_Model {
             'apellidos' => $apellidos,
             'dni' => $dni,
             'direccion' => $direccion,
+            'cp'=>$cp,
             'provincia_id' => $provincia
     );
     
     $this->db->insert('usuario', $datosUsuario);
        
     }
+    
 
     public function getUsuarioId($usuario){
         $rs = $this->db
@@ -191,5 +193,29 @@ class model_usuarios extends CI_Model {
     //DELETE FROM usuario WHERE 0
         $this->db->query("DELETE FROM usuario WHERE usuario_id='$id'");
     }
+
+
+    /**
+     * FUNCION PARA CREAR UNA CLAVE ALEATORIA 
+     */
+    function randomText($length) {  
+        $key="";
+        $pattern = "123456789PIUYTREWQASDFGHJKLMNBVCXZ123456789PLMK1IJNBHUYGVC123456789FTRDXZSEWAQWSDERFTGYHUJ123569876543ERDFREDESWQASWQASDGHGTY";  
+        for($i=0;$i<$length;$i++) {  
+          $key .= $pattern{rand(0,35)};  
+        }  
+        return $key;  
+    } 
+
+    /**
+ * Para comprobar si el usuario está autenticado o no
+ */
+	public function estaLogueado(){
+		if($this->session->userdata('dentro')){
+			return true;
+		}
+		  return false;
+    }
+    
 }
 
