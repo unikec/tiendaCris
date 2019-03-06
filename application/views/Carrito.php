@@ -21,7 +21,7 @@
                 <td><b><?= $row['name'] ?></b></td>
                 <td><b><?= $row['price'] ?>€</b></td>
                 <td><b><?= $row['descuento'] ?>%</b></td>
-                <td><i class="far fa-minus-square"></i>&nbsp;&nbsp;<b><?= $row['qty']?></b>&nbsp;&nbsp;<i class="far fa-plus-square"></i></td>
+                <td><i id='menos' class="far fa-minus-square"></i>&nbsp;&nbsp;<b><?= $row['qty']?></b>&nbsp;&nbsp;<i id='mas' class="far fa-plus-square"></i></td>
                 <td><b><?= ($row['price']-($row['price']*($row['descuento']/100)))*$row['qty'] ?>€</b></td>
                 <td><a href="<?= site_url() . '/Productos/eliminarProducto/'.$row['rowid']?>"><i class="fas fa-times"></i></a></td>
             </tr>
@@ -34,7 +34,7 @@
         <div class="col-md-4"><label>Total,<small> IVA incluido</small>: <b> <?= $totales['aPagar'] ?> €</b></label></div>
              
     </div>
-  <p>Todos los productos llevan IVA incluido en le precio, en el apartodo subtotal dedrá aplicado el pertinente descuento</p>
+  <p>Todos los productos llevan IVA incluido en el precio, en el apartodo subtotal vendrá aplicado el pertinente descuento</p>
 
      </div> 
     <div class="clearfix">

@@ -9,7 +9,7 @@ class ejemplo extends CI_Controller {
 		$this->load->library('email','','correo');
 
 
-    $this->correo->from('tiendacrist@gmail.com', 'tiendaCris');
+  $this->correo->from('tiendacrist@gmail.com', 'tiendaCris');
   $this->correo->to('garcasriz@gmail.com');
   $this->correo->subject('This is an email test');
   $this->correo->message('This is the body of the message');

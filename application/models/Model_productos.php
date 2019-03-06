@@ -336,7 +336,7 @@ class model_productos extends CI_Model {
                 ->get();
         $reg = $rs->row(); //reg = registro de resultado
         if ($reg) { //en el caso de obtener dato a la consulta
-            if($reg->stock>$canti){
+            if($reg->stock>=$canti){
                 return true;
             }else{
                 return false;
@@ -376,7 +376,7 @@ class model_productos extends CI_Model {
         $query="SELECT MAX(pedido_id) AS pedido_id FROM pedido WHERE usuario_id=$usuarioID ";
         $query = $this->db->query($query);
        // return $query->result();
-        return $query->row();
+        return $query->row()->pedido_id;
 
     }
 
@@ -384,10 +384,10 @@ class model_productos extends CI_Model {
      * Por cada articulo del carrito creo una linea de pedido
      * así almaceno toda la información relativa a la compra
      */
-    public function guardarLineaPedido($datos){
+  /*  public function guardarLineaPedido($datos){
 
           $this->db->insert('linea_pedido', $datos); 
-    }
+    }*/
 
 
 
@@ -397,6 +397,7 @@ class model_productos extends CI_Model {
  */
     public function registraPedido($productosCarrito, $pedido_id){
 
+       // print_r($pedido_id);
         foreach ($productosCarrito as $producto) {
             $imagen=$this->productoImg($producto['id']);
             $nombre=$this->productoNombre($producto['id']);
@@ -411,7 +412,8 @@ class model_productos extends CI_Model {
                 'imagen_producto'=>$imagen,
                 'pedido_id'=>$pedido_id
             );
-            $this->guardarLineaPedido($linea);
+          $this->db->insert('linea_pedido', $linea); 
+         // $this->guardarLineaPedido($linea);
         }
     }
 
@@ -528,18 +530,25 @@ class model_productos extends CI_Model {
 
       public function creaPedido($datosCliente){
           $datos="";
-          foreach ($datosCliente as $info) {
+         //S print_r($datosCliente->usuario_id);
+          //foreach ($datosCliente as $info) {
+            //echo $info['usuario_id'];
               $datos=array(                 
-                  'usario_id' => $info['usuario_id'],
-                  'nombre_usuario_pedido' => $info['nombre'],
-                  'apellidos_pedido' => $info['apellidos'],
-                  'dni_pedido' => $info['dni']
+                  'usuario_id' => $datosCliente->usuario_id,
+                  'nombre_usuario_pedido' => $datosCliente->nombre,
+                  'apellidos_pedido' => $datosCliente->apellidos,
+                  'dni_pedido' => $datosCliente->dni
                 );
-          }
+         // }
           $this->db->insert('pedido', $datos);        
       }
 
-
+      /**No se visualiza el carrito vacio */
+      public function eliminarCarritoSolo()
+      {
+          $this->load->library('cart');
+          $this->cart->destroy();
+      }
    
 
 }
