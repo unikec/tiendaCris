@@ -37,6 +37,6 @@
     
     
     <br>
-    <a class="btn btn btn-default" href="<?=site_url().'/Productos/verPedidos/'.$this->session->userdata('id')?>"><b><span class="glyphicon glyphicon-chevron-left"></span>&nbsp;&nbsp;&nbsp;Volver a ver todos los pedidos</b></a></center><br><br>
+    <a class="btn btn btn-default" href="<?=site_url().'/Productos/verPedidos/'.$this->session->userdata('id')?>"><b><span class="glyphicon glyphicon-chevron-left"></span>&nbsp;&nbsp;&nbsp;Volver a ver todos los pedidos</b></a>
 
 

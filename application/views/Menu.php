@@ -19,7 +19,7 @@ $categorias = $ci->Model_productos->getCategorias();
             </li>
             <?php if ($this->session->userdata('usuario_id')) :?>
             <li>
-                <a  class="btn btn-info" href="<?=site_url().'/Productos/totalPedidos/'.$this->session->userdata('usuario_id')?>">Pedidos</a>
+                <a  class="btn btn-info" href="<?=site_url().'/Productos/verPedidos/'.$this->session->userdata('usuario_id')?>">Pedidos</a>
             </li>
             <li>
 				<a  class="btn btn-warning"  href="<?=site_url().'/Usuarios/editaUsuario/'.$this->session->userdata('usuario_id')?>">Editar Usuario</a>

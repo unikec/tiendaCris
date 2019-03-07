@@ -549,6 +549,16 @@ class model_productos extends CI_Model {
           $this->load->library('cart');
           $this->cart->destroy();
       }
+
+      public function totalPedido($idPedido){
+        $lineas= $this->getLineasPedido($idPedido);
+        $total=0;
+        foreach ($lineas as $col) {
+            $total += $col->importe;            
+        }
+        return $total;
+      }
+      
    
 
 }

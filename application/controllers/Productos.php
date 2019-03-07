@@ -169,6 +169,8 @@ class productos extends CI_Controller
      */
     public function totalPedidos($id)
     {
+        $this->load->model('Model_productos');
+
         $datos = $this->Model_productos->getPedidos($id);
         $this->load->view('Plantilla', [
             'titulo' => 'Pedido realizados',
@@ -181,6 +183,7 @@ class productos extends CI_Controller
         $this->load->library('email', '', 'correo');
         $this->load->model('Model_fpdf');
         $this->load->model('Model_productos');
+
         $datosPedido= $this->Model_productos->getPedido($idPedido);
         $lineasPedido= $this->Model_productos->getLineasPedido($idPedido);
        
@@ -192,10 +195,10 @@ class productos extends CI_Controller
         $pdf->tabla($header, $lineasPedido);
         $pdf->Output("F");//lo guardo con le nombre por defecto Doc.pdf
 
-        $email = $this->Model_usuarios->getEmailUsuario($datosPedido->usuario_id);
+        $email = $this->Model_usuarios->getEmailUsuarioPorID($datosPedido->usuario_id);
         $this->correo->from('tiendacrist@gmail.com', 'Copi Billy Papper');
-        //$this->correo->to($email);
-        $this->correo->to('garcasriz@gmail.com');
+        $this->correo->to($email);
+       // $this->correo->to('garcasriz@gmail.com');
 
         $this->correo->subject("Detalle de su pedido en Copi Bily Paper");
         $this->correo->attach('doc.pdf', 'inline');//$this->correo->attach(base_url().'img/prueba.txt');
@@ -244,6 +247,7 @@ class productos extends CI_Controller
                 $datos['lineas'] = $this->Model_productos->getLineasPedido($pedidoID);
                 $datos['totales'] = $this->Model_productos->totalCompra($cesta);
                 
+                
                 $this->pdfPedido($pedidoID);
                 $this->load->view('Plantilla', [
                     'titulo' => 'Pedido realizados',
@@ -262,6 +266,32 @@ class productos extends CI_Controller
                 'cuerpo' => $this->load->view('ProblemasCompra', $datos, true)]);
         }
 
+    }
+
+    public function verPedidos(){
+
+        $this->load->model('Model_productos'); //cargo el modelo
+        $this->load->model('Model_usuarios');
+
+        $clienteID = $this->session->userdata('usuario_id');
+        $datos['h2Inicial'] = "Todos sus pedidos: ";
+        $datos['todosPedidos']= $this->Model_productos->getPedidos($clienteID);
+        $this->load->view('Plantilla', [
+            'titulo' => 'Pedido realizados',
+            'cuerpo' => $this->load->view('Pedidos', $datos, true)]);
+    }
+
+    public function verDetallePedido($id){
+        $this->load->model('Model_productos'); //cargo el modelo
+        $this->load->model('Model_usuarios');
+        $datos['pedido'] = $this->Model_productos->getPedido($id);
+        $datos['lineas'] = $this->Model_productos->getLineasPedido($id);
+        $datos['totales'] =array('aPagar'=>($this->Model_productos->totalPedido($id)), 'desgloseIVA'=>'valor no actualizado'); ;
+                
+               
+        $this->load->view('Plantilla', [
+            'titulo' => 'Pedido realizados',
+            'cuerpo' => $this->load->view('DetallePedido', $datos, true)]);
     }
 
     /**

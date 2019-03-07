@@ -102,6 +102,21 @@ class model_usuarios extends CI_Model {
             return '';
         }
     }
+    public function getEmailUsuarioPorID($usuario_id){
+        $rs = $this->db
+            ->select('email')
+            ->from('usuario')
+            ->where('usuario_id', $usuario_id)
+            ->get();
+
+        $reg= $rs->row();
+        if ($reg) {
+            return $reg->email;
+        }
+        else {
+            return '';
+        }
+    }
 
     public function getNombreUsuario($usuario){
         $rs = $this->db
