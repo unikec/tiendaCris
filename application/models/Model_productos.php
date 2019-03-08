@@ -280,6 +280,20 @@ class model_productos extends CI_Model {
         $subT = $precioPostDescuento * $cantidad;
         return $subT;
     }
+
+    public function getIva($id){
+        $rs = $this->db //rs=resultado
+        ->select('iva')
+        ->from('producto')
+        ->where('producto_id', $id)
+        ->get();
+        $reg = $rs->row(); //reg = registro de resultado
+        if ($reg) {
+          return  $reg->iva;
+        }else{
+            return "";
+         }
+    }
     
     /**
      * 
@@ -465,6 +479,19 @@ class model_productos extends CI_Model {
         $this->db->update('producto', $data);
     }
 
+
+    /**
+     * Tras la cancelación devuelvo el stock de todos los proctos del
+     * pedido a su estado inicial
+     */
+    public function devolucionPedido($idPedido){
+        $articulos=$this->getLineasPedido($idPedido);
+        foreach ($articulos as $col) {
+            $stockActu= $this->Modelo_productos->getStock($col->producto_id);
+            $this->Modelo_producto->devolucionProducto($col->producto_id,$col->cantidad,$stockActu);
+        }
+    }
+
     /**
      * Cambia el estado del pedido
      */
@@ -472,7 +499,7 @@ class model_productos extends CI_Model {
         $data = array(
             'estado' => $nuevoEstado);    
         $this->db->where('pedido_id', $idPedido);
-        $this->db->update('producto', $data);
+        $this->db->update('pedido', $data);
 
     }
     /**
@@ -544,7 +571,7 @@ class model_productos extends CI_Model {
       }
 
       /**No se visualiza el carrito vacio */
-      public function eliminarCarritoSolo()
+    public function eliminarCarritoSolo()
       {
           $this->load->library('cart');
           $this->cart->destroy();
@@ -557,6 +584,17 @@ class model_productos extends CI_Model {
             $total += $col->importe;            
         }
         return $total;
+      }
+
+      public function totalIVAPedido($idPedido){
+        $lineas= $this->getLineasPedido($idPedido);
+        $total=0;
+        foreach ($lineas as $col) {
+            $total += $col->importe;            
+        }         
+         $divisor= 1+(21/100);                    //redondeo de dos digitos al alza
+         $baseImponible = round(($total / $divisor), 2,PHP_ROUND_HALF_DOWN) ;
+         return $baseImponible;
       }
       
    

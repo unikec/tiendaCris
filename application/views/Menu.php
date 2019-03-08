@@ -15,8 +15,19 @@ $categorias = $ci->Model_productos->getCategorias();
                     <?php foreach ($categorias as $producto) : ?>
                     <a class="dropdown-item" href="<?= site_url().'/Productos/mostrarCategorias/'.$producto->categoria_id?>"><?= $producto->nombre ?></a> 
                     <?php endforeach; ?>   
-                </div>
+                </div>                
             </li>
+            <?php if ($this->session->userdata('administrador')) :?>
+            <li class="nav-item">
+                <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ref='<?= base_url(); ?>categorias'>Opciones Administración</a>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <a class="dropdown-item" href="<?= site_url().'/AdministrarCategorias'?>">Administrar Categorias</a> 
+                    <a class="dropdown-item" href="<?= site_url().'/AdministrarProductos'?>">Administrar Productos</a> 
+                    <a class="dropdown-item" href="<?= site_url().'/AdministrarEstadoPedido'?>">Cambiar Estado Pedido</a> 
+                      
+                </div>                
+            </li>
+            <?php endif; ?>
             <?php if ($this->session->userdata('usuario_id')) :?>
             <li>
                 <a  class="btn btn-info" href="<?=site_url().'/Productos/verPedidos/'.$this->session->userdata('usuario_id')?>">Pedidos</a>

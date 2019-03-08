@@ -66,7 +66,7 @@ Class FactPDF  extends Fpdf\Fpdf {
 
                $this->Cell($w[0],6,utf8_decode($row->nombre_producto),'LR',0,'L',$fill);
                $this->Cell($w[1],6,$row->cantidad,'LR',0,'C',$fill);    
-               $this->Cell($w[2],6,$row->importe."€",'LR',0,'C',$fill);
+               $this->Cell($w[2],6,$row->importe,'LR',0,'C',$fill);
               
                $this->Ln();
                $fill = !$fill;

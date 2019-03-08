@@ -179,7 +179,8 @@ class productos extends CI_Controller
 
     public function pdfPedido($idPedido){
       //  echo('hola el id del pedido es '.$idPedido);
-  
+        $this->load->library('cart');
+        
         $this->load->library('email', '', 'correo');
         $this->load->model('Model_fpdf');
         $this->load->model('Model_productos');
@@ -202,7 +203,19 @@ class productos extends CI_Controller
 
         $this->correo->subject("Detalle de su pedido en Copi Bily Paper");
         $this->correo->attach('doc.pdf', 'inline');//$this->correo->attach(base_url().'img/prueba.txt');
-        $this->correo->message("En el documento adjunto podrá visualizar el contenido de su pedido");
+        //$msg = $CI->load->view('email/vista', $data, true);
+                $cesta = $this->cart->contents();
+                $datos['pedido'] = $this->Model_productos->getPedido($idPedido);
+                $datos['lineas'] = $this->Model_productos->getLineasPedido($idPedido);
+                $datos['totales'] = $this->Model_productos->totalCompra($cesta);
+        $mensaje= $this->load->view('DetallePedido', $datos, true);
+       
+        $this->correo->message($mensaje);
+        $this->correo->set_header('Content-Type', 'text/html');
+
+        $this->correo->set_mailtype('HTML');
+       // $this->correo->message("En el documento adjunto podrá visualizar el contenido de su pedido");
+
         if($this->correo->send())
         {
          echo 'Correo enviado';
@@ -300,9 +313,33 @@ class productos extends CI_Controller
      * Segundo: cambiar estado pedido
      * tercero: devolver productos al estos
      */
-    public function cancelarPedido()
-    {
+    public function cancelarPedido($pedido_id) {
+        $this->load->model('Model_productos'); //cargo el modelo
+        $this->load->model('Model_usuarios');
+        
+        $this->Model_productos->cambiaEstadoPedido($pedido_id,'C');
+        $this->Model_productos->devolucionPedido($pedido_id);
+        $this->verPedidos();       
 
+    }
+
+    public function facturaPedido($idPedido){
+        $this->load->model('Model_fpdf2');
+        $this->load->model('Model_productos');
+
+        $datosPedido= $this->Model_productos->getPedido($idPedido);
+        $lineasPedido= $this->Model_productos->getLineasPedido($idPedido);
+       
+        $pdf = new FacturaPDF();
+        $pdf->AddPage("P");
+
+        $pdf->datosCliente($datosPedido);
+        $header = ["nombre",'precio',"cantidad", "subtotal"];
+        $pdf->tabla($header, $lineasPedido);
+        $total=$this->Model_productos->totalPedido($idPedido);
+        $iva=$this->Model_productos->totalIVAPedido($idPedido);
+        $pdf->totales($total,$iva);
+        $pdf->Output();//lo guardo con le nombre por defecto Doc.pdf
     }
 
 }
